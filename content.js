@@ -21,4 +21,4 @@ function main() {
     setTimeout(checkAmbientMode, 50)
 }
 
-(document || window).addEventListener("yt-navigate-finish", main, true);
+(document || window).addEventListener("yt-navigate-finish", () => setTimeout(main, 50), true);
