@@ -4,13 +4,9 @@
     "name": "Ambient Mode Blocker",
     "content_scripts": [
         {
-            "matches": [
-                "*://*.youtube.com/*"
-            ],
-            "js": [
-                "content.js"
-            ],
-            "run_at": "document_start"
+            "matches": ["*://*.youtube.com/watch*"],
+            "js": ["content.js"],
+            "run_at": "document_end"
         }
     ]
 }
