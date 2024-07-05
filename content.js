@@ -1,12 +1,25 @@
-const MAX_ATTEMPTS = 10;
-const ATTEMPT_INTERVAL = 250;
+const MAX_ATTEMPTS = 12;
+const ATTEMPT_INTERVAL = 300;
+
+let currentUrl = "";
+
+// Youtube uses single-page application so we listen for title changes and refire our blocker
+function setupTitleChangeListener() {
+    const observer = new MutationObserver(() => {
+        if (window.location.href !== currentUrl) {
+            currentUrl = window.location.href;
+            if (window.location.pathname.startsWith("/watch")) main();
+        }
+    });
+    observer.observe(document.querySelector("title"), { childList: true });
+}
 
 function checkAmbientMode() {
     const playerOptions = document.querySelectorAll(
         ".ytp-settings-menu .ytp-menuitem-label"
     );
     if (!playerOptions.length) {
-        console.warn("Player options not found");
+        console.warn("ambient - Player options not found");
         return false;
     }
 
@@ -21,11 +34,11 @@ function checkAmbientMode() {
     const attribute = ambientModeToggle.getAttribute("aria-checked");
 
     if (attribute === "true") {
-        console.log("Ambient mode is ON");
+        console.log("ambient - Ambient mode is ON");
         ambientModeToggle.click();
         return false;
     } else if (attribute === "false") {
-        console.log("Ambient mode is OFF");
+        console.log("ambient - Ambient mode is OFF");
         return true;
     }
 
@@ -55,8 +68,10 @@ async function main() {
     }
 
     if (attempts >= MAX_ATTEMPTS) {
-        console.error("Failed to turn off ambient mode. Max attempts reached.");
+        console.error(
+            "ambient - Failed to turn off ambient mode. Max attempts reached."
+        );
     }
 }
 
-main();
+setupTitleChangeListener();
